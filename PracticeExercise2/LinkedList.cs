@@ -31,9 +31,9 @@ namespace PracticeExercise2
             Tail = null;
 		}
 
-        public T? First => Head.Data;
+        public T? First => IsEmpty ? default(T) : Head.Data;
 
-        public T? Last => Tail.Data;
+        public T? Last => IsEmpty ? default(T) : Tail.Data;
 
         public bool IsEmpty
         {
@@ -116,21 +116,28 @@ namespace PracticeExercise2
 
         public T Get(int index)
         {
-            var count = 0;
+            if (index < 0 || index >= length)
+            {
+                throw new IndexOutOfRangeException();
+            }
+
+            //Travese
+
             var currentNode = Head;
+            var currentIndex = 0;
 
             while (currentNode != null)
             {
-                if (count == index)
+                if(currentIndex == index)
                 {
                     return currentNode.Data;
                 }
-                count++;
+
                 currentNode = currentNode.Next;
+                currentIndex++;
             }
 
-            throw new IndexOutOfRangeException();
-
+            return default(T);
         }
 
         public void InsertAfter(T newValue, int existingValue)
@@ -149,19 +156,40 @@ namespace PracticeExercise2
 
         public void InsertAt(T value, int index)
         {
-            var newNode = new LinkedListNode<T>(value);
-            newNode.Data = value;
-            newNode.Next = null;
-
-            if (Head == null)
+            if (index < 0 || index > length)
             {
-                Head = newNode;
+                throw new IndexOutOfRangeException();
             }
-            else if (index == 0)
+
+            if(index == 0)
             {
-                newNode.Next = Head;
-                Head = newNode;
-                return;
+                Prepend(value);
+            }
+
+            // Travese
+
+            var currentNode = Head;
+            var currentIndex = 0;
+
+            while (currentNode != null)
+            {
+                //Find the node at index -1
+                if (currentIndex == index -1)
+                {
+                    //insert the new node
+                    var newNode = new LinkedListNode<T>(value);
+                    newNode.Next = currentNode.Next;
+                    currentNode.Next = newNode;
+
+                    if( currentNode == Tail)
+                    {
+                        Tail = newNode;
+                    }
+                    length++;
+                }
+
+                currentNode = currentNode.Next;
+                currentIndex++;
             }
         }
 
@@ -239,7 +267,6 @@ namespace PracticeExercise2
 
         public void RemoveAt(int index)
         {
-
             if (IsEmpty)
             {
                 return;
