@@ -98,6 +98,7 @@ namespace PracticeExercise2
         {
             int index = 0;
 
+
             var currentNode = Head;
 
             while(currentNode!=null)
@@ -142,17 +143,39 @@ namespace PracticeExercise2
 
         public void InsertAfter(T newValue, int existingValue)
         {
-
-            if (existingValue == null)
+            var newNode = new LinkedListNode<T>(newValue);
+            var curNode = Head;
+            while (curNode != null)
             {
-                return;
+                if (IsEmpty)
+                {
+                    Head = newNode;
+                    Tail = newNode;
+                    length++;
+                }
+                if (curNode.Data.Equals(existingValue))
+                {
+                    if (curNode == Tail)
+                    {
+                        curNode.Next = newNode;
+                        Tail = newNode;
+                        length++;
+                        return;
+                    }
+                    else
+                    {
+                        newNode.Next = curNode.Next;
+                        curNode.Next = newNode;
+                        length++;
+                        return;
+                    }
+                }
+                curNode = curNode.Next;
             }
-            else
-            {
-                var newNode = new LinkedListNode<T>(newValue);
-                length++;
-            }
+            Append(newValue);
+            length++;
         }
+
 
         public void InsertAt(T value, int index)
         {
@@ -267,10 +290,9 @@ namespace PracticeExercise2
 
         public void RemoveAt(int index)
         {
-            if (IsEmpty)
-            {
-                return;
-            }
+            Remove(Get(index));
+
+
         }
 
         public IList<T> Reverse()
